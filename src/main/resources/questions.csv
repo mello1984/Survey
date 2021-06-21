@@ -1,0 +1,8 @@
+id,type,typeQ,text,right,points
+1,Q,RADIO_BOX,Question text,,10
+1,A,,Answer text (true),true,
+1,A,,Answer text,false,
+2,Q,TEXT_BOX,Open text,,20
+2,A,,45,true,
+3,Q,COMMENT,Comment text,,1
+

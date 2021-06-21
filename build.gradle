@@ -12,9 +12,17 @@ repositories {
 dependencies {
     implementation group: 'org.springframework', name: 'spring-context', version: '5.3.8'
 
+    implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.8'
+
+    compileOnly 'org.projectlombok:lombok:1.18.4'
+    annotationProcessor 'org.projectlombok:lombok:1.18.4'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.11.1'
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.11.1'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.20.2'
+
 }
 
 test {
