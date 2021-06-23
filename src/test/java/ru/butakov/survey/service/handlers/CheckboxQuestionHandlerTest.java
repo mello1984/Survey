@@ -189,7 +189,7 @@ class CheckboxQuestionHandlerTest {
 
     @Test
     void checkQuestion_thenWrong_emptyAnswerText() {
-        Question question = new Question(1, QuestionType.COMMENT, "tesxt", 10);
+        Question question = new Question(1, QuestionType.COMMENT, "text", 10);
         Answer answer1 = new Answer(question, "", true);
         Answer answer2 = new Answer(question, "answer text 2", false);
         question.addAnswer(answer1);
@@ -199,7 +199,7 @@ class CheckboxQuestionHandlerTest {
 
     @Test
     void checkQuestion_thenWrong_blankAnswerText() {
-        Question question = new Question(1, QuestionType.COMMENT, "tesxt", 10);
+        Question question = new Question(1, QuestionType.COMMENT, "text", 10);
         Answer answer1 = new Answer(question, " ", true);
         Answer answer2 = new Answer(question, "answer text 2", false);
         question.addAnswer(answer1);

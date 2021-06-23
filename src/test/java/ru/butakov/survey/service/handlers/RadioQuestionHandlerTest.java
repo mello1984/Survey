@@ -8,7 +8,6 @@ import ru.butakov.survey.domain.QuestionType;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class RadioQuestionHandlerTest {
     private final QuestionHandler handler = new RadioQuestionHandler();

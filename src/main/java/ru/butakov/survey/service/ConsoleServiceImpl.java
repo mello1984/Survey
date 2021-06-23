@@ -2,6 +2,7 @@ package ru.butakov.survey.service;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.butakov.survey.dao.QuestionRepository;
@@ -18,11 +19,12 @@ import java.util.stream.Collectors;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ConsoleServiceImpl {
+
     QuestionRepository repository;
     Map<QuestionType, QuestionHandler> handlerMap;
     int minPoints;
 
-    public ConsoleServiceImpl(QuestionRepository repository,
+    public ConsoleServiceImpl(@Qualifier("questionRepository") QuestionRepository repository,
                               List<QuestionHandler> questionHandlers,
                               @Value("${points.min}") int minPoints) {
         this.repository = repository;
@@ -49,7 +51,8 @@ public class ConsoleServiceImpl {
             QuestionHandler handler = handlerMap.get(question.getType());
             handler.getAnswersList(question).forEach(System.out::println);
             String answer = scanner.next();
-            user.setPoints(user.getPoints() + handler.getPoints(question, answer));
+            int points = handler.getPoints(question, answer);
+            user.setPoints(user.getPoints() + points);
         }
         System.out.printf("Minimal points - %d\nYour points - %d", minPoints, user.getPoints());
     }
