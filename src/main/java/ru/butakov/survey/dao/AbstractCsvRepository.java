@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import ru.butakov.survey.aop.Loggable;
 import ru.butakov.survey.domain.Answer;
 import ru.butakov.survey.domain.Question;
 import ru.butakov.survey.domain.QuestionType;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Loggable
 public abstract class AbstractCsvRepository implements QuestionRepository {
     String filename;
 
