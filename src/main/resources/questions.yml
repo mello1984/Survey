@@ -1,0 +1,24 @@
+---
+answers:
+  - right: true
+    text: Answer text (true)
+  - right: false
+    text: Answer text
+id: 1
+points: 10
+text: Question text
+type: RADIO_BOX
+---
+answers:
+  - right: true
+    text: '45'
+id: 2
+points: 20
+text: Open text
+type: TEXT_BOX
+---
+answers: []
+id: 3
+points: 1
+text: Comment text
+type: COMMENT

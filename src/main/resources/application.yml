@@ -1,0 +1,10 @@
+app:
+#  repository: classpathCsvRepository
+#  filename: questions.csv
+#  repository: filesystemCsvRepository
+#  filename: d:/test/questions.csv
+  repository: yamlRepository
+
+testing:
+  points:
+    min: 5

@@ -12,9 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Repository
-@ConditionalOnProperty(prefix = "question", value = "repository", havingValue = "filesystemCsvRepository")
+@ConditionalOnProperty(value = "app.repository", havingValue = "filesystemCsvRepository")
 public class FilesystemCsvRepository extends AbstractCsvRepository {
-    public FilesystemCsvRepository(@Value("${filename}") String filename) {
+    public FilesystemCsvRepository(@Value("${app.filename}") String filename) {
         super(filename);
     }
 

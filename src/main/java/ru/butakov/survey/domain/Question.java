@@ -12,19 +12,19 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @FieldDefaults(level = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Question {
     int id;
     QuestionType type;
     String text;
     int points;
-    List<Answer> answers;
+    List<Answer> answers = new ArrayList<>();
 
     public Question(int id, QuestionType type, String text, int points) {
         this.id = id;
         this.type = type;
         this.text = text;
         this.points = points;
-        answers = new ArrayList<>();
     }
 
     public void addAnswer(Answer answer){

@@ -2,17 +2,20 @@ package ru.butakov.survey.service;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.Yaml;
+import ru.butakov.survey.config.TestingPoints;
 import ru.butakov.survey.dao.QuestionRepository;
 import ru.butakov.survey.domain.Question;
 import ru.butakov.survey.domain.QuestionType;
 import ru.butakov.survey.domain.User;
 import ru.butakov.survey.service.handlers.QuestionHandler;
 
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -20,21 +23,22 @@ import java.util.stream.Collectors;
 
 @SpringBootApplication(scanBasePackages = "ru.butakov.survey.*")
 @EnableAspectJAutoProxy
+@EnableConfigurationProperties({TestingPoints.class})
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ConsoleServiceImpl implements CommandLineRunner {
 
     QuestionRepository repository;
     Map<QuestionType, QuestionHandler> handlerMap;
-    int minPoints;
+    TestingPoints testingPoints;
 
 
     public ConsoleServiceImpl(QuestionRepository repository,
                               List<QuestionHandler> questionHandlers,
-                              @Value("${points.min}") int minPoints) {
+                              TestingPoints testingPoints) {
         this.repository = repository;
         this.handlerMap = questionHandlers.stream().collect(Collectors.toMap(QuestionHandler::getQuestionType, h -> h));
-        this.minPoints = minPoints;
+        this.testingPoints = testingPoints;
     }
 
     public void startTest() {
@@ -58,8 +62,9 @@ public class ConsoleServiceImpl implements CommandLineRunner {
             String answer = scanner.next();
             int points = handler.getPoints(question, answer);
             user.setPoints(user.getPoints() + points);
+
         }
-        System.out.printf("Minimal points - %d\nYour points - %d", minPoints, user.getPoints());
+        System.out.printf("Minimal points - %d\nYour points - %d", testingPoints.getMin(), user.getPoints());
     }
 
     public void printAllQuestions() {
@@ -79,5 +84,12 @@ public class ConsoleServiceImpl implements CommandLineRunner {
     public void run(String... args) throws Exception {
         printAllQuestions();
 //        startTest();
+    }
+
+    void yamlDumper(Object object) {
+        Yaml yaml = new Yaml();
+        StringWriter writer = new StringWriter();
+        yaml.dump(object, writer);
+        System.out.println(writer.toString());
     }
 }
