@@ -2,8 +2,10 @@ package ru.butakov.survey.service;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 import ru.butakov.survey.dao.QuestionRepository;
 import ru.butakov.survey.domain.Question;
@@ -16,15 +18,18 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+@SpringBootApplication(scanBasePackages = "ru.butakov.survey.*")
+@EnableAspectJAutoProxy
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ConsoleServiceImpl {
+public class ConsoleServiceImpl implements CommandLineRunner {
 
     QuestionRepository repository;
     Map<QuestionType, QuestionHandler> handlerMap;
     int minPoints;
 
-    public ConsoleServiceImpl(@Qualifier("questionRepository") QuestionRepository repository,
+
+    public ConsoleServiceImpl(QuestionRepository repository,
                               List<QuestionHandler> questionHandlers,
                               @Value("${points.min}") int minPoints) {
         this.repository = repository;
@@ -70,4 +75,9 @@ public class ConsoleServiceImpl {
         System.out.println("***************************************************************************************");
     }
 
+    @Override
+    public void run(String... args) throws Exception {
+        printAllQuestions();
+//        startTest();
+    }
 }

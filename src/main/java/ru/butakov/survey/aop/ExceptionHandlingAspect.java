@@ -1,12 +1,9 @@
 package ru.butakov.survey.aop;
 
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 @Aspect
 @Component
@@ -17,5 +14,4 @@ public class ExceptionHandlingAspect {
     public void loggingThrowing(Exception exception) {
         log.warn("Logging after throwing: " + exception);
     }
-
 }

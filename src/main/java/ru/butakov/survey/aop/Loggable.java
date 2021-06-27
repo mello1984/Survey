@@ -3,7 +3,7 @@ package ru.butakov.survey.aop;
 import java.lang.annotation.*;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.CLASS)
 @Inherited
 public @interface Loggable {
 }

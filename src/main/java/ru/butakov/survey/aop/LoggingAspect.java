@@ -17,15 +17,22 @@ public class LoggingAspect {
 
     @Before("ru.butakov.survey.aop.Pointcuts.loggable()")
     public void loggingBefore(JoinPoint joinPoint) {
-        String args = Arrays.stream(joinPoint.getArgs())
-                .map(Object::toString)
-                .collect(Collectors.joining(","));
-
-        log.info("Logging before: " + joinPoint.toString() + ", args=[" + args + "]");
+        String loggingString = getLoggingString(joinPoint);
+        log.info("Logging before: " + loggingString);
     }
 
     @After("ru.butakov.survey.aop.Pointcuts.loggable()")
     public void loggingAfter(JoinPoint joinPoint) {
-        log.info("Logging after: " + joinPoint.toString());
+        log.info("Logging after: " + getLoggingString(joinPoint));
+    }
+
+    private String getLoggingString(JoinPoint joinPoint) {
+        String target = joinPoint.getTarget().getClass().getSimpleName();
+        String method = joinPoint.getSignature().getName();
+        String args = Arrays.stream(joinPoint.getArgs())
+                .map(Object::toString)
+                .collect(Collectors.joining(","));
+
+        return String.format("%s, method=%s, args=[%s]", target, method, args);
     }
 }
