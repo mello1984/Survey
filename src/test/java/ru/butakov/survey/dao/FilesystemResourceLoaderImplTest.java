@@ -8,23 +8,24 @@ import java.nio.file.NoSuchFileException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class FilesystemCsvRepositoryTest {
-    private final FilesystemCsvRepository repository = new FilesystemCsvRepository("");
+class FilesystemResourceLoaderImplTest {
 
     @Test
-    void getInputStream() throws IOException {
+    void getInputStream_thenSuccessful() throws IOException {
+        ResourceLoader resourceLoader = new FilesystemResourceLoaderImpl();
         String separator = File.separator;
         String filename = String.join(separator, "d:", "test", "questions.csv");
         FileInputStream expected = new FileInputStream(filename);
-        InputStream actual = repository.getInputStream(filename);
+        InputStream actual = resourceLoader.getInputStream(filename);
         assertThat(actual.readAllBytes()).isEqualTo(expected.readAllBytes());
     }
 
     @Test
     void getInputStream_thenFailed_fileNotExists() {
+        ResourceLoader resourceLoader = new FilesystemResourceLoaderImpl();
         String separator = File.separator;
         String filename = String.join(separator, "d:", "test", "notExistsFile.csv");
-        assertThatThrownBy(() -> repository.getInputStream(filename))
+        assertThatThrownBy(() -> resourceLoader.getInputStream(filename))
                 .isInstanceOf(UncheckedIOException.class)
                 .hasMessageContaining(filename)
                 .getRootCause()

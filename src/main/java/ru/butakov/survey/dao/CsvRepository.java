@@ -1,10 +1,14 @@
 package ru.butakov.survey.dao;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Repository;
 import ru.butakov.survey.aop.Loggable;
+import ru.butakov.survey.config.AppProps;
 import ru.butakov.survey.domain.Answer;
 import ru.butakov.survey.domain.Question;
 import ru.butakov.survey.domain.QuestionType;
@@ -17,36 +21,28 @@ import java.util.Map;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Loggable
-public abstract class AbstractCsvRepository implements QuestionRepository {
-    String filename;
-
-    public AbstractCsvRepository(String filename) {
-        this.filename = filename;
-    }
+@ConditionalOnProperty(value = "app.repository", havingValue = "csvRepository")
+@AllArgsConstructor
+@Repository
+public class CsvRepository implements QuestionRepository {
+    AppProps appProps;
+    ResourceLoader resourceLoader;
 
     @Override
     public List<Question> findAll() {
-        Map<Integer, Question> map = getMapFromCsv(filename);
+        Map<Integer, Question> map = getMapFromCsv(appProps.getFilename());
         return new ArrayList<>(map.values());
     }
 
     @Override
     public Question findById(int id) {
-        Map<Integer, Question> map = getMapFromCsv(filename);
+        Map<Integer, Question> map = getMapFromCsv(appProps.getFilename());
         return map.get(id);
     }
 
-    abstract InputStream getInputStream(String filename);
-
     Map<Integer, Question> getMapFromCsv(String filename) {
-        return getMapFromCsv(getInputStream(filename), filename);
-    }
-
-    Map<Integer, Question> getMapFromCsv(InputStream inputStream, String filename) {
+        InputStream inputStream = resourceLoader.getInputStream(filename);
         try (inputStream) {
-            if (inputStream == null)
-                throw new FileNotFoundException(String.format("File '%s' not found on classpath", filename));
-
             Reader in = new InputStreamReader(inputStream);
             Iterable<CSVRecord> csvRecords = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
             return getQuestionMap(csvRecords);

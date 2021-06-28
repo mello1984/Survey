@@ -1,9 +1,16 @@
 app:
-#  repository: classpathCsvRepository
-#  filename: questions.csv
-#  repository: filesystemCsvRepository
+  repository: ymlRepository
+  filepath: classpath
+  filename: questions.yml
+#  repository: ymlRepository
+#  filepath: filesystem
+#  filename: d:/test/questions.yml
+#  repository: csvRepository
+#  filepath: filesystem
 #  filename: d:/test/questions.csv
-  repository: yamlRepository
+#  repository: csvRepository
+#  filepath: classpath
+#  filename: questions.csv
 
 testing:
   points:

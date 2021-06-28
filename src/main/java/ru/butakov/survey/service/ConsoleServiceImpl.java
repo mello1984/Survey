@@ -3,9 +3,6 @@ package ru.butakov.survey.service;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.Yaml;
 import ru.butakov.survey.config.TestingPoints;
@@ -21,9 +18,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-@SpringBootApplication(scanBasePackages = "ru.butakov.survey.*")
-@EnableAspectJAutoProxy
-@EnableConfigurationProperties({TestingPoints.class})
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ConsoleServiceImpl implements CommandLineRunner {
@@ -81,7 +75,7 @@ public class ConsoleServiceImpl implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         printAllQuestions();
 //        startTest();
     }
