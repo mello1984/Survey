@@ -10,8 +10,7 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
+@Builder
 public class User {
-    String name;
-    String surname;
-    int points;
+    String username;
 }

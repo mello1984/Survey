@@ -5,11 +5,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import ru.butakov.survey.config.AppProps;
-import ru.butakov.survey.config.TestingPoints;
+import ru.butakov.survey.config.TestingPointsProps;
 
 @SpringBootApplication
 @EnableAspectJAutoProxy
-@EnableConfigurationProperties({TestingPoints.class, AppProps.class})
+@EnableConfigurationProperties({TestingPointsProps.class, AppProps.class})
 public class SpringBootApp {
 
     public static void main(String[] args) {

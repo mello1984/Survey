@@ -2,15 +2,18 @@ app:
   repository: ymlRepository
   filepath: classpath
   filename: questions.yml
-#  repository: ymlRepository
-#  filepath: filesystem
-#  filename: d:/test/questions.yml
-#  repository: csvRepository
-#  filepath: filesystem
-#  filename: d:/test/questions.csv
-#  repository: csvRepository
-#  filepath: classpath
-#  filename: questions.csv
+  #  repository: ymlRepository
+  #  filepath: filesystem
+  #  filename: d:/test/questions.yml
+  #  repository: csvRepository
+  #  filepath: filesystem
+  #  filename: d:/test/questions.csv
+  #  repository: csvRepository
+  #  filepath: classpath
+  #  filename: questions.csv
+  consoleService.enabled: true
+
+spring.shell.interactive.enabled: false
 
 testing:
   points:

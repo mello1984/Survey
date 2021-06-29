@@ -10,6 +10,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
-public class TestingPoints {
+public class TestingPointsProps {
     int min;
 }
