@@ -9,39 +9,37 @@ import org.springframework.stereotype.Service;
 import ru.butakov.survey.domain.User;
 import ru.butakov.survey.service.utils.ConsoleServiceUtils;
 
-import java.util.Scanner;
-
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ConditionalOnProperty(value = "app.consoleService.enabled", havingValue = "true")
 @RequiredArgsConstructor
 public class ConsoleServiceCommandlineImpl implements CommandLineRunner, ConsoleService {
     final ConsoleServiceUtils consoleServiceUtils;
+    final IOService ioService;
     User user;
 
     @Override
     public void startTest() {
         if (isLoggedUser())
-            System.out.println(consoleServiceUtils.getTestResultString(user));
+            ioService.printString(consoleServiceUtils.getTestResultString(user));
     }
 
     @Override
     public void print() {
-        System.out.println(consoleServiceUtils.testToString());
+        ioService.printString(consoleServiceUtils.testToString());
     }
 
     @Override
     public void login(String username) {
         user = consoleServiceUtils.getUser(username);
-        System.out.println("Logged as " + user.getUsername());
+        ioService.printString("Logged as " + user.getUsername());
     }
 
     @Override
     public void run(String... args) {
-        Scanner scanner = new Scanner(System.in);
         print();
-        System.out.println("Write your username please");
-        login(scanner.next());
+        ioService.printString("Write your username please");
+        login(ioService.readString());
         startTest();
     }
 

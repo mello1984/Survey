@@ -10,7 +10,6 @@ import ru.butakov.survey.domain.User;
 import ru.butakov.survey.service.utils.ConsoleServiceUtils;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 
@@ -20,23 +19,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ConsoleServiceShellImplTest {
     @Mock
     private ConsoleServiceUtils utils;
+    @Mock
+    private IOService ioService;
     private final PrintStream systemOut = System.out;
 
     @Test
-    void print() throws IOException {
-        ConsoleServiceShellImpl consoleServiceShell = new ConsoleServiceShellImpl(utils);
+    void print() {
+        ConsoleServiceShellImpl consoleServiceShell = new ConsoleServiceShellImpl(utils, ioService);
         String expected = "test string";
         Mockito.when(utils.testToString()).thenReturn(expected);
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(baos));
-
         consoleServiceShell.print();
-        baos.flush();
-
-        String actual = baos.toString();
-        assertThat(actual).isEqualTo(expected + System.lineSeparator());
-        System.setOut(systemOut);
+        Mockito.verify(ioService).printString(expected);
+        Mockito.verifyNoMoreInteractions(ioService);
         Mockito.verify(utils).testToString();
         Mockito.verifyNoMoreInteractions(utils);
     }
@@ -45,19 +40,12 @@ class ConsoleServiceShellImplTest {
     void login() throws Exception {
         String username = "username";
         User user = User.builder().username(username).build();
-        ConsoleServiceShellImpl consoleServiceShell = new ConsoleServiceShellImpl(utils);
+        ConsoleServiceShellImpl consoleServiceShell = new ConsoleServiceShellImpl(utils, ioService);
         Mockito.when(utils.getUser(username)).thenReturn(user);
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(baos));
-
-
         consoleServiceShell.login(username);
-        baos.flush();
-
-        String actual = baos.toString();
-        assertThat(actual).isEqualTo("Logged as " + username + System.lineSeparator());
-        System.setOut(systemOut);
+        Mockito.verify(ioService).printString("Logged as " + username );
+        Mockito.verifyNoMoreInteractions(ioService);
 
         Field field = consoleServiceShell.getClass().getDeclaredField("user");
         field.setAccessible(true);
@@ -68,27 +56,21 @@ class ConsoleServiceShellImplTest {
     }
 
     @Test
-    void startTest() throws Exception {
-        ConsoleServiceShellImpl consoleServiceShell = new ConsoleServiceShellImpl(utils);
+    void startTest() {
+        ConsoleServiceShellImpl consoleServiceShell = new ConsoleServiceShellImpl(utils, ioService);
         String expected = "test string";
         Mockito.when(utils.getTestResultString(Mockito.isNull())).thenReturn(expected);
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(baos));
-
         consoleServiceShell.startTest();
-        System.setOut(systemOut);
-        baos.flush();
-
-        String actual = baos.toString();
-        assertThat(actual).isEqualTo(expected + System.lineSeparator());
+        Mockito.verify(ioService).printString(expected);
+        Mockito.verifyNoMoreInteractions(ioService);
         Mockito.verify(utils).getTestResultString(Mockito.isNull());
         Mockito.verifyNoMoreInteractions(utils);
     }
 
     @Test
     void isLoggedUser_returnUnavailable_whenUserIsNull() {
-        ConsoleServiceShellImpl consoleServiceShell = new ConsoleServiceShellImpl(utils);
+        ConsoleServiceShellImpl consoleServiceShell = new ConsoleServiceShellImpl(utils, ioService);
         Availability expected = Availability.unavailable("Login please");
         Availability actual = consoleServiceShell.isLoggedUser();
         assertThat(actual.isAvailable()).isEqualTo(expected.isAvailable());
@@ -97,7 +79,7 @@ class ConsoleServiceShellImplTest {
 
     @Test
     void isLoggedUser_returnAvailable_whenUserExists() throws Exception {
-        ConsoleServiceShellImpl consoleServiceShell = new ConsoleServiceShellImpl(utils);
+        ConsoleServiceShellImpl consoleServiceShell = new ConsoleServiceShellImpl(utils, ioService);
 
         Field field = consoleServiceShell.getClass().getDeclaredField("user");
         field.setAccessible(true);

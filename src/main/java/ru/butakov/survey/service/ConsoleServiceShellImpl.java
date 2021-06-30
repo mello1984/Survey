@@ -17,19 +17,20 @@ import ru.butakov.survey.service.utils.ConsoleServiceUtils;
 @RequiredArgsConstructor
 public class ConsoleServiceShellImpl implements ConsoleService {
     final ConsoleServiceUtils consoleServiceUtils;
+    final IOService ioService;
     User user;
 
     @Override
     @ShellMethod(value = "Print questions command", key = {"p", "print"})
     public void print() {
-        System.out.println(consoleServiceUtils.testToString());
+        ioService.printString(consoleServiceUtils.testToString());
     }
 
     @Override
     @ShellMethod(value = "Login method", key = {"l", "login"})
     public void login(String username) {
         user = consoleServiceUtils.getUser(username);
-        System.out.println("Logged as " + user.getUsername());
+        ioService.printString("Logged as " + user.getUsername());
     }
 
     @Override
@@ -37,7 +38,7 @@ public class ConsoleServiceShellImpl implements ConsoleService {
     @ShellMethodAvailability(value = "isLoggedUser")
     public void startTest() {
         String result = consoleServiceUtils.getTestResultString(user);
-        System.out.println(result);
+        ioService.printString(result);
     }
 
     Availability isLoggedUser() {
