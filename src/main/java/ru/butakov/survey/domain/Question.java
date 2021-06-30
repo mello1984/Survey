@@ -7,12 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
-@FieldDefaults(level = AccessLevel.PROTECTED)
+@Data
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PROTECTED)
 public class Question {
     int id;
     QuestionType type;
@@ -27,7 +24,7 @@ public class Question {
         this.points = points;
     }
 
-    public void addAnswer(Answer answer){
+    public void addAnswer(Answer answer) {
         answers.add(answer);
     }
 

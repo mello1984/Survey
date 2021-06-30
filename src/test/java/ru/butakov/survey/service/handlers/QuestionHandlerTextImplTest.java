@@ -10,8 +10,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class TextQuestionHandlerImplTest {
-    private final QuestionHandler handler = new TextQuestionHandlerImpl();
+class QuestionHandlerTextImplTest {
+    private final QuestionHandler handler = new QuestionHandlerTextImpl();
 
     @Test
     void getQuestionType() {

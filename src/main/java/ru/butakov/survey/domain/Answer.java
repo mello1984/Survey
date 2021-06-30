@@ -3,15 +3,13 @@ package ru.butakov.survey.domain;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@EqualsAndHashCode
-@ToString
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Answer {
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     Question question;
     String text;
     boolean right;

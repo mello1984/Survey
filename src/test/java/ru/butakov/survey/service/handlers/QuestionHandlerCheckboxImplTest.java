@@ -9,8 +9,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CheckboxQuestionHandlerTest {
-    private final QuestionHandler handler = new CheckboxQuestionHandler();
+class QuestionHandlerCheckboxImplTest {
+    private final QuestionHandler handler = new QuestionHandlerCheckboxImpl();
 
     @Test
     void getQuestionType() {

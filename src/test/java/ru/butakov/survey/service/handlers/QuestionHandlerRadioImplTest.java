@@ -9,8 +9,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class RadioQuestionHandlerTest {
-    private final QuestionHandler handler = new RadioQuestionHandler();
+class QuestionHandlerRadioImplTest {
+    private final QuestionHandler handler = new QuestionHandlerRadioImpl();
 
     @Test
     void getQuestionType() {

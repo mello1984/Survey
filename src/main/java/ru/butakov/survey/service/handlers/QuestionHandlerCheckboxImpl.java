@@ -6,21 +6,31 @@ import ru.butakov.survey.domain.Answer;
 import ru.butakov.survey.domain.Question;
 import ru.butakov.survey.domain.QuestionType;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Loggable
-public class RadioQuestionHandler implements QuestionHandler {
+public class QuestionHandlerCheckboxImpl implements QuestionHandler {
     @Override
     public QuestionType getQuestionType() {
-        return QuestionType.RADIO_BOX;
+        return QuestionType.CHECKBOX;
     }
 
     @Override
     public int getPoints(Question question, String answer) {
-        int number = Integer.parseInt(answer) - 1;
-        return question.getAnswers().get(number).isRight() ? question.getPoints() : 0;
+        Set<Integer> actual = answer.isEmpty() ?
+                Collections.emptySet() :
+                Arrays.stream(answer.split(" "))
+                        .mapToInt(s -> Integer.parseInt(s) - 1)
+                        .boxed()
+                        .collect(Collectors.toSet());
+
+        Set<Integer> expected = new HashSet<>();
+        for (int i = 0; i < question.getAnswers().size(); i++) {
+            if (question.getAnswers().get(i).isRight()) expected.add(i);
+        }
+        return actual.equals(expected) ? question.getPoints() : 0;
     }
 
     @Override
@@ -37,7 +47,6 @@ public class RadioQuestionHandler implements QuestionHandler {
     public boolean checkQuestion(Question question) {
         return !question.getText().isBlank() &&
                 question.getAnswers().size() > 1 &&
-                question.getAnswers().stream().filter(Answer::isRight).count() == 1 &&
                 question.getAnswers().stream().noneMatch(a -> a.getText().isBlank());
     }
 }

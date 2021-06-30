@@ -11,6 +11,7 @@ import ru.butakov.survey.config.AppProps;
 import ru.butakov.survey.domain.Answer;
 import ru.butakov.survey.domain.Question;
 import ru.butakov.survey.domain.QuestionType;
+import ru.butakov.survey.exceptions.SurveyDaoException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
-class CsvRepositoryTest {
+class QuestionRepositoryCsvImplTest {
     @Mock
     AppProps appProps;
     @Mock
@@ -35,7 +36,7 @@ class CsvRepositoryTest {
         Map<Integer, Question> map = Map.of(question.getId(), question);
         List<Question> expected = List.of(question);
 
-        CsvRepository csvRepository = Mockito.spy(new CsvRepository(appProps, resourceLoader));
+        QuestionRepositoryCsvImpl csvRepository = Mockito.spy(new QuestionRepositoryCsvImpl(appProps, resourceLoader));
         String filename = "filename";
         Mockito.when(appProps.getFilename()).thenReturn(filename);
         Mockito.doReturn(map).when(csvRepository).getMapFromCsv(filename);
@@ -50,7 +51,7 @@ class CsvRepositoryTest {
         Question expected = new Question(id, QuestionType.RADIO_BOX, "text", 10);
         Map<Integer, Question> map = Map.of(expected.getId(), expected);
 
-        CsvRepository csvRepository = Mockito.spy(new CsvRepository(appProps, resourceLoader));
+        QuestionRepositoryCsvImpl csvRepository = Mockito.spy(new QuestionRepositoryCsvImpl(appProps, resourceLoader));
         String filename = "filename";
         Mockito.when(appProps.getFilename()).thenReturn(filename);
         Mockito.doReturn(map).when(csvRepository).getMapFromCsv(filename);
@@ -64,7 +65,7 @@ class CsvRepositoryTest {
         Question question = new Question(1, QuestionType.RADIO_BOX, "Question text", 10);
         Map<Integer, Question> expected = Map.of(question.getId(), question);
 
-        CsvRepository csvRepository = Mockito.spy(new CsvRepository(appProps, resourceLoader));
+        QuestionRepositoryCsvImpl csvRepository = Mockito.spy(new QuestionRepositoryCsvImpl(appProps, resourceLoader));
         String filename = "filename";
         InputStream stream = InputStream.nullInputStream();
         Mockito.when(resourceLoader.getInputStream(filename)).thenReturn(stream);
@@ -76,7 +77,7 @@ class CsvRepositoryTest {
 
     @Test
     void putRecordsToMap_thenAddQuestion() throws IOException {
-        CsvRepository csvRepository = Mockito.spy(new CsvRepository(appProps, resourceLoader));
+        QuestionRepositoryCsvImpl csvRepository = Mockito.spy(new QuestionRepositoryCsvImpl(appProps, resourceLoader));
         String csvString = "id,type,typeQ,text,right,points\n1,Q,RADIO_BOX,Question text,,10";
         StringReader reader = new StringReader(csvString);
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader);
@@ -92,7 +93,7 @@ class CsvRepositoryTest {
 
     @Test
     void putRecordsToMap_thenAddAnswer() throws IOException {
-        CsvRepository csvRepository = Mockito.spy(new CsvRepository(appProps, resourceLoader));
+        QuestionRepositoryCsvImpl csvRepository = Mockito.spy(new QuestionRepositoryCsvImpl(appProps, resourceLoader));
         String csvString = "id,type,typeQ,text,right,points\n1,A,,Answer text,true,";
         StringReader reader = new StringReader(csvString);
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader);
@@ -108,13 +109,13 @@ class CsvRepositoryTest {
 
     @Test
     void putRecordsToMap_thenFailed_wrongType() throws IOException {
-        CsvRepository csvRepository = Mockito.spy(new CsvRepository(appProps, resourceLoader));
+        QuestionRepositoryCsvImpl csvRepository = Mockito.spy(new QuestionRepositoryCsvImpl(appProps, resourceLoader));
         String csvString = "id,type,typeQ,text,right,points\n1,W,,Answer text,true,";
         StringReader reader = new StringReader(csvString);
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader);
 
         assertThatThrownBy(() -> csvRepository.getQuestionMap(records))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SurveyDaoException.class)
                 .hasMessage("Type can be 'Q' or 'A' only, not W");
 
         Mockito.verify(csvRepository).getQuestionMap(records);
@@ -123,7 +124,7 @@ class CsvRepositoryTest {
 
     @Test
     void addQuestion_thenSuccessful() throws IOException {
-        CsvRepository csvRepository = Mockito.spy(new CsvRepository(appProps, resourceLoader));
+        QuestionRepositoryCsvImpl csvRepository = Mockito.spy(new QuestionRepositoryCsvImpl(appProps, resourceLoader));
         String csvString = "id,type,typeQ,text,right,points\n1,Q,RADIO_BOX,Question text,,10";
         StringReader reader = new StringReader(csvString);
 
@@ -141,7 +142,7 @@ class CsvRepositoryTest {
 
     @Test
     void addQuestion_thenFailed_duplicateKey() throws IOException {
-        CsvRepository csvRepository = Mockito.spy(new CsvRepository(appProps, resourceLoader));
+        QuestionRepositoryCsvImpl csvRepository = Mockito.spy(new QuestionRepositoryCsvImpl(appProps, resourceLoader));
         String csvString = "id,type,typeQ,text,right,points\n1,Q,RADIO_BOX,Question text,,10";
         StringReader reader = new StringReader(csvString);
 
@@ -153,13 +154,13 @@ class CsvRepositoryTest {
         Map<Integer, Question> actual = new HashMap<>(expected);
 
         assertThatThrownBy(() -> csvRepository.addQuestionFromRecordToMap(actual, record))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SurveyDaoException.class)
                 .hasMessage("Duplicate question with number 1");
     }
 
     @Test
     void addAnswer_thenSuccessful() throws IOException {
-        CsvRepository csvRepository = Mockito.spy(new CsvRepository(appProps, resourceLoader));
+        QuestionRepositoryCsvImpl csvRepository = Mockito.spy(new QuestionRepositoryCsvImpl(appProps, resourceLoader));
         String csvString = "id,type,typeQ,text,right,points\n1,A,,Answer text,true,";
         StringReader reader = new StringReader(csvString);
 
@@ -180,7 +181,7 @@ class CsvRepositoryTest {
 
     @Test
     void addAnswer_thenFailed_NotExists() throws IOException {
-        CsvRepository csvRepository = Mockito.spy(new CsvRepository(appProps, resourceLoader));
+        QuestionRepositoryCsvImpl csvRepository = Mockito.spy(new QuestionRepositoryCsvImpl(appProps, resourceLoader));
         String csvString = "id,type,typeQ,text,right,points\n1,A,,Answer text,true,";
         StringReader reader = new StringReader(csvString);
 
@@ -195,7 +196,7 @@ class CsvRepositoryTest {
         Map<Integer, Question> actual = new HashMap<>(expected);
 
         assertThatThrownBy(() -> csvRepository.addAnswerFromRecordToQuestion(actual, record))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SurveyDaoException.class)
                 .hasMessage("Question with number 1 not found for answer");
     }
 }

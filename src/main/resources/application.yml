@@ -11,9 +11,9 @@ app:
   #  repository: csvRepository
   #  filepath: classpath
   #  filename: questions.csv
-  consoleService.enabled: true
+  consoleService.enabled: false
 
-spring.shell.interactive.enabled: false
+spring.shell.interactive.enabled: true
 
 testing:
   points:

@@ -6,14 +6,18 @@ import lombok.experimental.FieldDefaults;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import ru.butakov.survey.aop.Loggable;
 import ru.butakov.survey.config.AppProps;
 import ru.butakov.survey.domain.Answer;
 import ru.butakov.survey.domain.Question;
 import ru.butakov.survey.domain.QuestionType;
+import ru.butakov.survey.exceptions.SurveyDaoException;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,8 +27,8 @@ import java.util.Map;
 @Loggable
 @ConditionalOnProperty(value = "app.repository", havingValue = "csvRepository")
 @AllArgsConstructor
-@Repository
-public class CsvRepository implements QuestionRepository {
+@Component
+public class QuestionRepositoryCsvImpl implements QuestionRepository {
     AppProps appProps;
     ResourceLoader resourceLoader;
 
@@ -47,7 +51,7 @@ public class CsvRepository implements QuestionRepository {
             Iterable<CSVRecord> csvRecords = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
             return getQuestionMap(csvRecords);
         } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            throw new SurveyDaoException(e);
         }
     }
 
@@ -63,7 +67,7 @@ public class CsvRepository implements QuestionRepository {
                     addAnswerFromRecordToQuestion(questionMap, record);
                     break;
                 default:
-                    throw new IllegalArgumentException(String.format("Type can be 'Q' or 'A' only, not %s", type));
+                    throw new SurveyDaoException(String.format("Type can be 'Q' or 'A' only, not %s", type));
             }
         }
         return questionMap;
@@ -76,7 +80,7 @@ public class CsvRepository implements QuestionRepository {
         String text = record.get("text");
 
         if (questionMap.containsKey(id))
-            throw new IllegalArgumentException("Duplicate question with number " + id);
+            throw new SurveyDaoException("Duplicate question with number " + id);
 
         Question question = new Question(id, type, text, points);
         questionMap.put(id, question);
@@ -89,7 +93,7 @@ public class CsvRepository implements QuestionRepository {
 
         Question question = questionMap.get(id);
         if (question == null)
-            throw new IllegalArgumentException(String.format("Question with number %d not found for answer", id));
+            throw new SurveyDaoException(String.format("Question with number %d not found for answer", id));
 
         Answer answer = new Answer(question, text, flag);
         question.addAnswer(answer);

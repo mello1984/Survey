@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import ru.butakov.survey.aop.Loggable;
@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @ConditionalOnProperty(value = "app.repository", havingValue = "ymlRepository")
-@Repository
+@Component
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Loggable
-public class YmlRepository implements QuestionRepository {
+public class QuestionRepositoryYmlImpl implements QuestionRepository {
     ResourceLoader resourceLoader;
     AppProps appProps;
 

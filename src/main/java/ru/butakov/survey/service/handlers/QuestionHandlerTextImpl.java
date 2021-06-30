@@ -10,15 +10,15 @@ import java.util.List;
 
 @Service
 @Loggable
-public class CommentQuestionHandlerImpl implements QuestionHandler {
+public class QuestionHandlerTextImpl implements QuestionHandler {
     @Override
     public QuestionType getQuestionType() {
-        return QuestionType.COMMENT;
+        return QuestionType.TEXT_BOX;
     }
 
     @Override
     public int getPoints(Question question, String answer) {
-        return question.getPoints();
+        return question.getAnswers().get(0).getText().equals(answer) ? question.getPoints() : 0;
     }
 
     @Override
@@ -28,6 +28,9 @@ public class CommentQuestionHandlerImpl implements QuestionHandler {
 
     @Override
     public boolean checkQuestion(Question question) {
-        return !question.getText().isBlank() && question.getAnswers().isEmpty();
+        return !question.getText().isBlank() &&
+                question.getAnswers().size() == 1 &&
+                question.getAnswers().get(0).isRight() &&
+                !question.getAnswers().get(0).getText().isBlank();
     }
 }
